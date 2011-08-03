@@ -15,9 +15,6 @@ III,=8888Z.,I8888Z$$$    $    $+  $  $  $   $     $=?$?:   ?.      ?$     $+
        ,$$$$$=                                                                  
          ,I=.                                                                   
                                                                                 
-                                                                                
-                                                                 GlassGiant.com
-
 
 ZZZZZZZZZZZZ$$$$$$$$$$$$$$$$$777777777777777ZOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOZ
 ZZZZZZZZZZZ$$$$$$$$$$$$$$$77777777777777$OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOZ
