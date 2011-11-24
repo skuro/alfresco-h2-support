@@ -4,8 +4,25 @@
   <groupId>it.sk.alfresco</groupId>
   <artifactId>h2-support</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.1</version>
   <name>h2-support</name>
-  <url>http://skuro.tk</url>
+  <url>http://www.skuro.tk/2011/08/03/h2-embedded-db-and-alfresco-3-4/</url>
   <description>H2 Database support for Alfresco</description>
+
+  <developers>
+    <developer>
+      <id>skuro</id>
+      <name>Carlo Sciolla</name>
+      <email>skuro@skuro.tk</email>
+      <url>http://skuro.tk</url>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+      <properties>
+        <picUrl>http://2.gravatar.com/avatar/7b21764e687cc434d41560b147ea292b?size=420</picUrl>
+      </properties>
+    </developer>
+  </developers>
+
 </project>
