@@ -1,20 +1,3 @@
--- Copyright (c) 2011 Carlo Sciolla
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
--- and associated documentation files (the "Software"), to deal in the Software without restriction, 
--- including without limitation the rights to use, copy, modify, merge, publish, distribute, 
--- sublicense, and/or sell copies of the Software, and to permit persons to whom the Software 
--- is furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in all copies or 
--- substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
--- BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
--- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
--- DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
---
 --
 -- Title:      Core Repository Tables
 -- Database:   PostgreSQL
@@ -39,6 +22,16 @@ CREATE TABLE alf_applied_patch
     report VARCHAR(1024),
     PRIMARY KEY (id)
 );
+
+CREATE SEQUENCE alf_locale_seq START WITH 1 INCREMENT BY 1;
+CREATE TABLE alf_locale
+(
+    id INT8 NOT NULL,
+    version INT8 NOT NULL,
+    locale_str VARCHAR(20) NOT NULL,
+    PRIMARY KEY (id)    
+);
+CREATE UNIQUE INDEX locale_str ON alf_locale (locale_str);
 
 CREATE SEQUENCE alf_namespace_seq START WITH 1 INCREMENT BY 1;
 CREATE TABLE alf_namespace
@@ -123,9 +116,10 @@ CREATE SEQUENCE alf_acl_change_set_seq START WITH 1 INCREMENT BY 1;
 CREATE TABLE alf_acl_change_set
 (
     id INT8 NOT NULL,
-    version INT8 NOT NULL,
+    commit_time_ms INT8,
     PRIMARY KEY (id)
 );
+CREATE INDEX idx_alf_acs_ctms ON alf_acl_change_set (commit_time_ms);
 
 CREATE SEQUENCE alf_access_control_list_seq START WITH 1 INCREMENT BY 1;
 CREATE TABLE alf_access_control_list
@@ -226,6 +220,7 @@ CREATE TABLE alf_node
     transaction_id INT8 NOT NULL,
     node_deleted BOOL NOT NULL,
     type_qname_id INT8 NOT NULL,
+    locale_id INT8 NOT NULL,
     acl_id INT8,
     audit_creator VARCHAR(255),
     audit_created VARCHAR(30),
@@ -236,7 +231,8 @@ CREATE TABLE alf_node
     CONSTRAINT fk_alf_node_acl FOREIGN KEY (acl_id) REFERENCES alf_access_control_list (id),
     CONSTRAINT fk_alf_node_store FOREIGN KEY (store_id) REFERENCES alf_store (id),
     CONSTRAINT fk_alf_node_tqn FOREIGN KEY (type_qname_id) REFERENCES alf_qname (id),
-    CONSTRAINT fk_alf_node_txn FOREIGN KEY (transaction_id) REFERENCES alf_transaction (id)
+    CONSTRAINT fk_alf_node_txn FOREIGN KEY (transaction_id) REFERENCES alf_transaction (id),
+    CONSTRAINT fk_alf_node_loc FOREIGN KEY (locale_id) REFERENCES alf_locale (id)
 );
 CREATE UNIQUE INDEX store_id ON alf_node (store_id, uuid);
 CREATE INDEX idx_alf_node_del ON alf_node (node_deleted);
@@ -244,6 +240,7 @@ CREATE INDEX fk_alf_node_acl ON alf_node (acl_id);
 CREATE INDEX fk_alf_node_txn ON alf_node (transaction_id);
 CREATE INDEX fk_alf_node_store ON alf_node (store_id);
 CREATE INDEX fk_alf_node_tqn ON alf_node (type_qname_id);
+CREATE INDEX fk_alf_node_loc ON alf_node (locale_id);
 
 CREATE INDEX fk_alf_store_root ON alf_store (root_node_id);
 ALTER TABLE alf_store ADD CONSTRAINT fk_alf_store_root FOREIGN KEY (root_node_id) REFERENCES alf_node (id);
@@ -277,71 +274,6 @@ CREATE INDEX fk_alf_cass_qnns ON alf_child_assoc (qname_ns_id);
 CREATE INDEX idx_alf_cass_qncrc ON alf_child_assoc (qname_crc, type_qname_id, parent_node_id);
 CREATE INDEX idx_alf_cass_pri ON alf_child_assoc (parent_node_id, is_primary, child_node_id);
 
-CREATE SEQUENCE alf_locale_seq START WITH 1 INCREMENT BY 1;
-CREATE TABLE alf_locale
-(
-    id INT8 NOT NULL,
-    version INT8 NOT NULL,
-    locale_str VARCHAR(20) NOT NULL,
-    PRIMARY KEY (id)    
-);
-CREATE UNIQUE INDEX locale_str ON alf_locale (locale_str);
-
-CREATE SEQUENCE alf_attributes_seq START WITH 1 INCREMENT BY 1;
-CREATE TABLE alf_attributes
-(
-    id INT8 NOT NULL,
-    type VARCHAR(1) NOT NULL,
-    version INT8 NOT NULL,
-    acl_id INT8,
-    bool_value BOOL,
-    byte_value INT2,
-    short_value INT4,
-    int_value INT4,
-    long_value INT8,
-    float_value FLOAT4,
-    double_value FLOAT8,
-    string_value VARCHAR(1024),
-    serializable_value BYTEA,
-    PRIMARY KEY (id),    
-    CONSTRAINT fk_alf_attr_acl FOREIGN KEY (acl_id) REFERENCES alf_access_control_list (id)
-);
-CREATE INDEX fk_alf_attr_acl ON alf_attributes (acl_id);
-
-CREATE TABLE alf_global_attributes
-(
-    name VARCHAR(160) NOT NULL,
-    attribute INT8,
-    PRIMARY KEY (name),   
-    CONSTRAINT fk_alf_gatt_att FOREIGN KEY (attribute) REFERENCES alf_attributes (id)
-);
-CREATE UNIQUE INDEX attribute ON alf_global_attributes (attribute);
-CREATE INDEX fk_alf_gatt_att ON alf_global_attributes (attribute);
-
-CREATE TABLE alf_list_attribute_entries
-(
-    list_id INT8 NOT NULL,
-    mindex INT4 NOT NULL,
-    attribute_id INT8,
-    PRIMARY KEY (list_id, mindex),
-    CONSTRAINT fk_alf_lent_att FOREIGN KEY (attribute_id) REFERENCES alf_attributes (id),
-    CONSTRAINT fk_alf_lent_latt FOREIGN KEY (list_id) REFERENCES alf_attributes (id)
-);
-CREATE INDEX fk_alf_lent_att ON alf_list_attribute_entries (attribute_id);
-CREATE INDEX fk_alf_lent_latt ON alf_list_attribute_entries (list_id);
-
-CREATE TABLE alf_map_attribute_entries
-(
-    map_id INT8 NOT NULL,
-    mkey VARCHAR(160) NOT NULL,
-    attribute_id INT8,
-    PRIMARY KEY (map_id, mkey),
-    CONSTRAINT fk_alf_matt_att FOREIGN KEY (attribute_id) REFERENCES alf_attributes (id),
-    CONSTRAINT fk_alf_matt_matt FOREIGN KEY (map_id) REFERENCES alf_attributes (id)
-);
-CREATE INDEX fk_alf_matt_matt ON alf_map_attribute_entries (map_id);
-CREATE INDEX fk_alf_matt_att ON alf_map_attribute_entries (attribute_id);
-
 CREATE TABLE alf_node_aspects
 (
     node_id INT8 NOT NULL,
@@ -361,14 +293,15 @@ CREATE TABLE alf_node_assoc
     source_node_id INT8 NOT NULL,
     target_node_id INT8 NOT NULL,
     type_qname_id INT8 NOT NULL,
+    assoc_index INT8 NOT NULL,
     PRIMARY KEY (id),    
     CONSTRAINT fk_alf_nass_snode FOREIGN KEY (source_node_id) REFERENCES alf_node (id),
     CONSTRAINT fk_alf_nass_tnode FOREIGN KEY (target_node_id) REFERENCES alf_node (id),
     CONSTRAINT fk_alf_nass_tqn FOREIGN KEY (type_qname_id) REFERENCES alf_qname (id)
 );
 CREATE UNIQUE INDEX source_node_id ON alf_node_assoc (source_node_id, target_node_id, type_qname_id);
-CREATE INDEX fk_alf_nass_snode ON alf_node_assoc (source_node_id);
-CREATE INDEX fk_alf_nass_tnode ON alf_node_assoc (target_node_id);
+CREATE INDEX fk_alf_nass_snode ON alf_node_assoc (source_node_id, type_qname_id, assoc_index);
+CREATE INDEX fk_alf_nass_tnode ON alf_node_assoc (target_node_id, type_qname_id);
 CREATE INDEX fk_alf_nass_tqn ON alf_node_assoc (type_qname_id);
 
 CREATE TABLE alf_node_properties

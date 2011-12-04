@@ -1,32 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- 
-   Copyright (c) 2011 Carlo Sciolla
-  
-   Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-   and associated documentation files (the "Software"), to deal in the Software without restriction, 
-   including without limitation the rights to use, copy, modify, merge, publish, distribute, 
-   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software 
-   is furnished to do so, subject to the following conditions:
-  
-   The above copyright notice and this permission notice shall be included in all copies or 
-   substantial portions of the Software.
-  
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
-   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--->
 
-<!DOCTYPE sqlMap      
-    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
-    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<sqlMap namespace="alfresco.activities">
+<mapper namespace="alfresco.activities.insert">
 
-   <insert id="insert_activity_feedcontrol" parameterClass="FeedControl">
+   <insert id="insert_activity_feedcontrol" parameterType="FeedControl">
       
-      <selectKey keyProperty="id" resultClass="long">
+      <selectKey keyProperty="id" resultType="long" order="BEFORE" >
          select nextVal('alf_activity_feed_control_seq')
       </selectKey>
       
@@ -34,9 +14,9 @@
       
    </insert>
    
-   <insert id="insert_activity_feed" parameterClass="ActivityFeed">
+   <insert id="insert_activity_feed" parameterType="ActivityFeed">
       
-      <selectKey keyProperty="id" resultClass="long">
+      <selectKey keyProperty="id" resultType="long" order="BEFORE" >
          select nextVal('alf_activity_feed_seq')
       </selectKey>
       
@@ -44,9 +24,9 @@
       
    </insert>
    
-   <insert id="insert_activity_post" parameterClass="ActivityPost">
+   <insert id="insert_activity_post" parameterType="ActivityPost">
       
-      <selectKey keyProperty="id" resultClass="long">
+      <selectKey keyProperty="id" resultType="long" order="BEFORE" >
          select nextVal('alf_activity_post_seq')
       </selectKey>
       
@@ -54,4 +34,4 @@
       
    </insert>
    
-</sqlMap>
+</mapper>
