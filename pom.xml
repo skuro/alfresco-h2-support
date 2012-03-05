@@ -1,28 +1,47 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>it.sk.alfresco</groupId>
-  <artifactId>h2-support</artifactId>
-  <packaging>jar</packaging>
-  <version>1.1</version>
-  <name>h2-support</name>
-  <url>http://www.skuro.tk/2011/08/03/h2-embedded-db-and-alfresco-3-4/</url>
-  <description>H2 Database support for Alfresco</description>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>tk.skuro.alfresco</groupId>
+    <artifactId>h2-support</artifactId>
+    <packaging>jar</packaging>
+    <version>1.1</version>
+    <name>h2-support</name>
+    <url>http://www.skuro.tk/2011/08/03/h2-embedded-db-and-alfresco-3-4/</url>
+    <description>H2 Database support for Alfresco</description>
 
-  <developers>
-    <developer>
-      <id>skuro</id>
-      <name>Carlo Sciolla</name>
-      <email>skuro@skuro.tk</email>
-      <url>http://skuro.tk</url>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>+1</timezone>
-      <properties>
-        <picUrl>http://2.gravatar.com/avatar/7b21764e687cc434d41560b147ea292b?size=420</picUrl>
-      </properties>
-    </developer>
-  </developers>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <scm>
+        <connection>scm:git:git://github.com/skuro/alfresco-h2-support.git</connection>
+        <developerConnection>scm:git:git@github.com:skuro/alfresco-h2-support.git</developerConnection>
+        <url>https://github.com/skuro/alfresco-h2-support</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <url>http://www.opensource.org/licenses/MIT</url>
+            <name>MIT License</name>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>skuro</id>
+            <name>Carlo Sciolla</name>
+            <email>skuro@skuro.tk</email>
+            <url>http://skuro.tk</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
+            <properties>
+                <picUrl>http://2.gravatar.com/avatar/7b21764e687cc434d41560b147ea292b?size=420</picUrl>
+            </properties>
+        </developer>
+    </developers>
 
 </project>
