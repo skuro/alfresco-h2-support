@@ -15,6 +15,19 @@
         <version>7</version>
     </parent>
 
+    <scm>
+        <connection>scm:git:git://github.com/skuro/alfresco-h2-support.git</connection>
+        <developerConnection>scm:git:git@github.com:skuro/alfresco-h2-support.git</developerConnection>
+        <url>https://github.com/skuro/alfresco-h2-support</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <url>http://www.opensource.org/licenses/MIT</url>
+            <name>MIT License</name>
+        </license>
+    </licenses>
+
     <developers>
         <developer>
             <id>skuro</id>
