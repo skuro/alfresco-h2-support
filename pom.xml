@@ -34,11 +34,25 @@
             <email>skuro@skuro.tk</email>
             <url>http://skuro.tk</url>
             <roles>
+                <role>maintainer</role>
                 <role>developer</role>
             </roles>
             <timezone>+1</timezone>
             <properties>
-                <picUrl>http://2.gravatar.com/avatar/7b21764e687cc434d41560b147ea292b?size=420</picUrl>
+                <picUrl>http://www.gravatar.com/avatar/7b21764e687cc434d41560b147ea292b?size=100</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <id>evansj</id>
+            <name>Jon Evans</name>
+            <email>jon@springyweb.com</email>
+            <url>http://springyweb.com</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+            <properties>
+                <picUrl>https://www.gravatar.com/avatar/fd1769776698da69ffd5bdda094d8581?s=100</picUrl>
             </properties>
         </developer>
     </developers>
