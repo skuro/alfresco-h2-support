@@ -1,18 +1,18 @@
 -- Copyright (c) 2011 Carlo Sciolla
 --
--- Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
--- and associated documentation files (the "Software"), to deal in the Software without restriction, 
--- including without limitation the rights to use, copy, modify, merge, publish, distribute, 
--- sublicense, and/or sell copies of the Software, and to permit persons to whom the Software 
+-- Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+-- and associated documentation files (the "Software"), to deal in the Software without restriction,
+-- including without limitation the rights to use, copy, modify, merge, publish, distribute,
+-- sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
 -- is furnished to do so, subject to the following conditions:
 --
--- The above copyright notice and this permission notice shall be included in all copies or 
+-- The above copyright notice and this permission notice shall be included in all copies or
 -- substantial portions of the Software.
 --
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
--- BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
--- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
--- DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+-- BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+-- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+-- DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --
 --
@@ -24,6 +24,7 @@
 -- Please contact support@alfresco.com if you need assistance with the upgrade.
 --
 
+
     create table avm_aspects (
         node_id INT8 not null,
         qname_id INT8 not null,
@@ -32,9 +33,10 @@
 
     create table avm_child_entries (
         parent_id INT8 not null,
+        lc_name varchar(160) not null,
         name varchar(160) not null,
         child_id INT8 not null,
-        primary key (parent_id, name)
+        primary key (parent_id, lc_name)
     );
 
     create table avm_history_links (
@@ -92,7 +94,7 @@
         length INT8,
         primary key (id)
     );
-	
+
     create sequence avm_store_properties_seq start with 1 increment by 1;
     create table avm_store_properties (
         id INT8 not null,
@@ -109,7 +111,7 @@
         serializable_value BYTEA,
         primary key (id)
     );
-		
+
     create sequence avm_stores_seq start with 1 increment by 1;
     create table avm_stores (
         id INT8 not null,
@@ -120,7 +122,7 @@
         acl_id INT8,
         primary key (id)
     );
-	
+
     create table avm_version_layered_node_entry (
         version_root_id INT8 not null,
         md5sum varchar(32) not null,
@@ -141,50 +143,50 @@
         primary key (id),
         unique (version_id, avm_store_id)
     );
-	
-    alter table avm_aspects        
+
+    alter table avm_aspects
         add constraint fk_avm_nasp_n
         foreign key (node_id)
         references avm_nodes (id);
 	create index fk_avm_nasp_n on avm_aspects(node_id);
 
-    alter table avm_child_entries        
+    alter table avm_child_entries
         add constraint fk_avm_ce_child
         foreign key (child_id)
         references avm_nodes (id);
 	create index fk_avm_ce_child on avm_child_entries(child_id);
 
-    alter table avm_child_entries        
+    alter table avm_child_entries
         add constraint fk_avm_ce_parent
         foreign key (parent_id)
         references avm_nodes (id);
 	create index fk_avm_ce_parent on avm_child_entries(parent_id);
 
-    alter table avm_history_links        
+    alter table avm_history_links
         add constraint fk_avm_hl_desc
         foreign key (descendent)
         references avm_nodes (id);
 	create index fk_avm_hl_desc on avm_history_links(descendent);
 
-    alter table avm_history_links        
+    alter table avm_history_links
         add constraint fk_avm_hl_ancestor
         foreign key (ancestor)
         references avm_nodes (id);
 	create index fk_avm_hl_ancestor on avm_history_links(ancestor);
 
-    alter table avm_merge_links        
+    alter table avm_merge_links
         add constraint fk_avm_ml_from
         foreign key (mfrom)
         references avm_nodes (id);
 	create index fk_avm_ml_from on avm_merge_links(mfrom);
 
-    alter table avm_merge_links        
+    alter table avm_merge_links
         add constraint fk_avm_ml_to
         foreign key (mto)
         references avm_nodes (id);
 	create index fk_avm_ml_to on avm_merge_links(mto);
 
-    alter table avm_node_properties        
+    alter table avm_node_properties
         add constraint fk_avm_nprop_n
         foreign key (node_id)
         references avm_nodes (id);
@@ -192,37 +194,37 @@
 
     create index idx_avm_n_pi on avm_nodes (primary_indirection);
 
-    alter table avm_nodes        
+    alter table avm_nodes
         add constraint fk_avm_n_acl
         foreign key (acl_id)
         references alf_access_control_list (id);
 	create index fk_avm_n_acl on avm_nodes(acl_id);
 
-    alter table avm_nodes        
+    alter table avm_nodes
         add constraint fk_avm_n_store
         foreign key (store_new_id)
         references avm_stores (id);
 	create index fk_avm_n_store on avm_nodes(store_new_id);
 
-    alter table avm_store_properties        
+    alter table avm_store_properties
         add constraint fk_avm_sprop_store
         foreign key (avm_store_id)
         references avm_stores (id);
 	create index fk_avm_sprop_store on avm_store_properties(avm_store_id);
 
-    alter table avm_stores        
+    alter table avm_stores
         add constraint fk_avm_s_root
         foreign key (current_root_id)
         references avm_nodes (id);
 	create index fk_avm_s_root on avm_stores(current_root_id);
 
-	alter table avm_stores        
+	alter table avm_stores
         add constraint fk_avm_s_acl
         foreign key (acl_id)
         references alf_access_control_list (id);
 	create index fk_avm_s_acl on avm_stores(acl_id);
 
-	alter table avm_version_layered_node_entry        
+	alter table avm_version_layered_node_entry
         add constraint fk_avm_vlne_vr
         foreign key (version_root_id)
         references avm_version_roots (id);
@@ -230,18 +232,18 @@
 
     create index idx_avm_vr_version on avm_version_roots (version_id);
 
-    alter table avm_version_roots        
+    alter table avm_version_roots
         add constraint fk_avm_vr_store
         foreign key (avm_store_id)
         references avm_stores (id);
 	create index fk_avm_vr_store on avm_version_roots(avm_store_id);
 
-    alter table avm_version_roots        
+    alter table avm_version_roots
         add constraint fk_avm_vr_root
         foreign key (root_id)
         references avm_nodes (id);
 	create index fk_avm_vr_root on avm_version_roots(root_id);
-        
+
 CREATE INDEX fk_avm_nasp_qn ON avm_aspects (qname_id);
 ALTER TABLE avm_aspects ADD CONSTRAINT fk_avm_nasp_qn FOREIGN KEY (qname_id) REFERENCES alf_qname (id);
 
@@ -255,6 +257,7 @@ CREATE INDEX idx_avm_hl_revpk ON avm_history_links (descendent, ancestor);
 
 CREATE INDEX idx_avm_vr_revuq ON avm_version_roots (avm_store_id, version_id);
 
+CREATE INDEX idx_avm_ce_lc_name ON avm_child_entries (lc_name, parent_id);
 
 --
 -- Record script finish
