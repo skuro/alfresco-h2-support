@@ -195,7 +195,7 @@ CREATE TABLE alf_transaction
     PRIMARY KEY (id),
     CONSTRAINT fk_alf_txn_svr FOREIGN KEY (server_id) REFERENCES alf_server (id)
 );
-CREATE INDEX idx_alf_txn_ctms ON alf_transaction (commit_time_ms);
+CREATE INDEX idx_alf_txn_ctms ON alf_transaction (commit_time_ms, id);
 CREATE INDEX fk_alf_txn_svr ON alf_transaction (server_id);
 
 CREATE SEQUENCE alf_store_seq START WITH 1 INCREMENT BY 1;
