@@ -50,7 +50,7 @@ echo "-- Comparing creation scripts"
 for file in $DIAL/*
 do
     name=`basename $file`
-    changed=`diff -wBb <(grep -ve "^--" $DIAL_H2/$name) <(grep -ve "^--" $file)`
+    changed=`diff -uwBb <(grep -ve "^--" $DIAL_H2/$name) <(grep -ve "^--" $file)`
     if [ "x$changed" != "x" ]
     then
         echo $'\e[00;31m'$name$'\e[00m changed:'
@@ -66,7 +66,7 @@ echo "-- Comparing SQL maps"
 for file in $SQLMAP/*
 do
     name=`basename $file`
-    changed=`diff -wBb <(cat $SQLMAP_H2/$name | sed '/<!--/,/-->/d') <(cat $file | sed '/<!--/,/-->/d')`
+    changed=`diff -uwBb <(cat $SQLMAP_H2/$name | sed '/<!--/,/-->/d') <(cat $file | sed '/<!--/,/-->/d')`
     if [ "x$changed" != "x" ]
     then
         echo $'\e[00;31m'$name$'\e[00m changed:'
