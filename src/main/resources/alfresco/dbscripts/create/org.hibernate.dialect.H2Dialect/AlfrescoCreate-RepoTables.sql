@@ -54,7 +54,6 @@ CREATE TABLE alf_qname
     PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX ns_id ON alf_qname (ns_id, local_name);
-CREATE INDEX fk_alf_qname_ns ON alf_qname (ns_id);
 
 CREATE SEQUENCE alf_permission_seq START WITH 1 INCREMENT BY 1;
 CREATE TABLE alf_permission
