@@ -3,7 +3,7 @@
     <groupId>tk.skuro.alfresco</groupId>
     <artifactId>h2-support</artifactId>
     <packaging>jar</packaging>
-    <version>4.2.0</version>
+    <version>4.2.1-SNAPSHOT</version>
     <name>h2-support</name>
     <url>http://www.skuro.tk</url>
     <description>H2 Database support for Alfresco</description>
@@ -18,7 +18,7 @@
         <connection>scm:git:git://github.com/skuro/alfresco-h2-support.git</connection>
         <developerConnection>scm:git:git@github.com:skuro/alfresco-h2-support.git</developerConnection>
         <url>https://github.com/skuro/alfresco-h2-support</url>
-      <tag>v4.2.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <licenses>
