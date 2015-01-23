@@ -37,11 +37,22 @@ fi
 
 ALF=$1
 
+if [ ! -f $ALF ]; then
+    echo war file $ALF not found
+    usage
+fi
+
 TMP=`mktemp -d -t alfh2`
 
 echo "-- Extracting Alfresco"
 
 unzip -d $TMP $ALF > /dev/null
+
+if [ ! -d "$TMP/WEB-INF/classes/alfresco/dbscripts/create/org.hibernate.dialect.PostgreSQLDialect" ]; then
+    echo "-- Extracting alfresco-repository-*.jar (needed for Alfresco 5.0+)"
+    unzip -o -d $TMP/WEB-INF/classes $TMP/WEB-INF/lib/alfresco-repository-*.jar > /dev/null
+fi
+
 DIAL="$TMP/WEB-INF/classes/alfresco/dbscripts/create/org.hibernate.dialect.PostgreSQLDialect"
 DIAL_H2="src/main/resources/alfresco/dbscripts/create/org.hibernate.dialect.H2Dialect"
 
