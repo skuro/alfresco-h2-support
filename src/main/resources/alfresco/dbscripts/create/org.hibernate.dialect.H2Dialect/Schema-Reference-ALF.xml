@@ -25,6 +25,7 @@
     <sequence name="alf_child_assoc_seq"/>
     <sequence name="alf_content_data_seq"/>
     <sequence name="alf_content_url_seq"/>
+    <sequence name="alf_content_url_enc_seq"/>
     <sequence name="alf_encoding_seq"/>
     <sequence name="alf_locale_seq"/>
     <sequence name="alf_lock_resource_seq"/>
@@ -388,27 +389,22 @@
           <nullable>false</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="activity_format" order="7">
-          <type>varchar(10)</type>
-          <nullable>true</nullable>
-          <autoincrement>false</autoincrement>
-        </column>
-        <column name="site_network" order="8">
+        <column name="site_network" order="7">
           <type>varchar(255)</type>
           <nullable>true</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="app_tool" order="9">
+        <column name="app_tool" order="8">
           <type>varchar(36)</type>
           <nullable>true</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="post_user_id" order="10">
+        <column name="post_user_id" order="9">
           <type>varchar(255)</type>
           <nullable>false</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="feed_date" order="11">
+        <column name="feed_date" order="10">
           <type>timestamp</type>
           <nullable>false</nullable>
           <autoincrement>false</autoincrement>
@@ -421,11 +417,6 @@
       </primarykey>
       <foreignkeys/>
       <indexes>
-        <index name="feed_activityformat_idx" unique="false">
-          <columnnames>
-            <columnname>activity_format</columnname>
-          </columnnames>
-        </index>
         <index name="feed_feeduserid_idx" unique="false">
           <columnnames>
             <columnname>feed_user_id</columnname>
@@ -1018,9 +1009,11 @@
             <columnname>child_node_id</columnname>
           </columnnames>
         </index>
-        <index name="fk_alf_cass_pnode" unique="false">
+        <index name="idx_alf_cass_pnode" unique="false">
           <columnnames>
             <columnname>parent_node_id</columnname>
+            <columnname>assoc_index</columnname>
+            <columnname>id</columnname>
           </columnnames>
         </index>
         <index name="fk_alf_cass_qnns" unique="false">
@@ -1181,6 +1174,80 @@
         <index name="idx_alf_conturl_ot" unique="false">
           <columnnames>
             <columnname>orphan_time</columnname>
+          </columnnames>
+        </index>
+        <index name="idx_alf_conturl_sz" unique="false">
+          <columnnames>
+            <columnname>content_size</columnname>
+            <columnname>id</columnname>
+          </columnnames>
+        </index>
+      </indexes>
+    </table>
+    <table name="alf_content_url_encryption">
+      <columns>
+        <column name="id" order="1">
+          <type>int8</type>
+          <nullable>false</nullable>
+          <autoincrement>false</autoincrement>
+        </column>
+        <column name="content_url_id" order="2">
+          <type>int8</type>
+          <nullable>false</nullable>
+          <autoincrement>false</autoincrement>
+        </column>
+        <column name="algorithm" order="3">
+          <type>varchar(10)</type>
+          <nullable>false</nullable>
+          <autoincrement>false</autoincrement>
+        </column>
+        <column name="key_size" order="4">
+          <type>int4</type>
+          <nullable>false</nullable>
+          <autoincrement>false</autoincrement>
+        </column>
+        <column name="encrypted_key" order="5">
+          <type>bytea</type>
+          <nullable>false</nullable>
+          <autoincrement>false</autoincrement>
+        </column>
+        <column name="master_keystore_id" order="6">
+          <type>varchar(20)</type>
+          <nullable>false</nullable>
+          <autoincrement>false</autoincrement>
+        </column>
+        <column name="master_key_alias" order="7">
+          <type>varchar(15)</type>
+          <nullable>false</nullable>
+          <autoincrement>false</autoincrement>
+        </column>
+        <column name="unencrypted_file_size" order="8">
+          <type>int8</type>
+          <nullable>true</nullable>
+          <autoincrement>false</autoincrement>
+        </column>
+      </columns>
+      <primarykey name="alf_content_url_encryption_pkey">
+        <columnnames>
+          <columnname order="1">id</columnname>
+        </columnnames>
+      </primarykey>
+      <foreignkeys>
+        <foreignkey name="fk_alf_cont_enc_url">
+          <localcolumn>content_url_id</localcolumn>
+          <targettable>alf_content_url</targettable>
+          <targetcolumn>id</targetcolumn>
+        </foreignkey>
+      </foreignkeys>
+      <indexes>
+        <index name="idx_alf_cont_enc_url" unique="true">
+          <columnnames>
+            <columnname>content_url_id</columnname>
+          </columnnames>
+        </index>
+        <index name="idx_alf_cont_enc_mka" unique="false">
+          <columnnames>
+            <columnname>master_key_alias</columnname>
           </columnnames>
         </index>
       </indexes>
@@ -1453,53 +1520,55 @@
           <nullable>false</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="node_deleted" order="6">
-          <type>bool</type>
-          <nullable>false</nullable>
-          <autoincrement>false</autoincrement>
-        </column>
-        <column name="type_qname_id" order="7">
+        <column name="type_qname_id" order="6">
           <type>int8</type>
           <nullable>false</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="locale_id" order="8">
+        <column name="locale_id" order="7">
           <type>int8</type>
           <nullable>false</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="acl_id" order="9">
+        <column name="acl_id" order="8">
           <type>int8</type>
           <nullable>true</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="audit_creator" order="10">
+        <column name="audit_creator" order="9">
           <type>varchar(255)</type>
           <nullable>true</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="audit_created" order="11">
+        <column name="audit_created" order="10">
           <type>varchar(30)</type>
           <nullable>true</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="audit_modifier" order="12">
+        <column name="audit_modifier" order="11">
           <type>varchar(255)</type>
           <nullable>true</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="audit_modified" order="13">
+        <column name="audit_modified" order="12">
           <type>varchar(30)</type>
           <nullable>true</nullable>
           <autoincrement>false</autoincrement>
         </column>
-        <column name="audit_accessed" order="14">
+        <column name="audit_accessed" order="13">
           <type>varchar(30)</type>
           <nullable>true</nullable>
           <autoincrement>false</autoincrement>
         </column>
       </columns>
       <primarykey name="alf_node_pkey">
+        <validators>
+            <validator class="org.alfresco.util.schemacomp.validator.NameValidator">
+              <properties>
+                <property name="pattern">alf_node_pkey1?</property>
+              </properties>
+            </validator>
+        </validators>
         <columnnames>
           <columnname order="1">id</columnname>
         </columnnames>
@@ -1553,25 +1622,56 @@
             <columnname>store_id</columnname>
           </columnnames>
         </index>
-        <index name="fk_alf_node_tqn" unique="false">
+        <index name="idx_alf_node_tqn" unique="false">
           <columnnames>
+            <columnname>type_qname_id</columnname>
+            <columnname>store_id</columnname>
+            <columnname>id</columnname>
+          </columnnames>
+        </index>
+        <index name="idx_alf_node_txn_type" unique="false">
+          <columnnames>
+            <columnname>transaction_id</columnname>
             <columnname>type_qname_id</columnname>
           </columnnames>
         </index>
-        <index name="fk_alf_node_txn" unique="false">
+        <index name="idx_alf_node_mdq" unique="false">
           <columnnames>
-            <columnname>transaction_id</columnname>
+            <columnname>store_id</columnname>
+            <columnname>type_qname_id</columnname>
+            <columnname>id</columnname>
           </columnnames>
         </index>
-        <index name="idx_alf_node_del" unique="false">
+        <index name="idx_alf_node_cor" unique="false">
           <columnnames>
-            <columnname>node_deleted</columnname>
+            <columnname>audit_creator</columnname>
+            <columnname>store_id</columnname>
+            <columnname>type_qname_id</columnname>
+            <columnname>id</columnname>
           </columnnames>
         </index>
-        <index name="idx_alf_node_txn_del" unique="false">
+        <index name="idx_alf_node_crd" unique="false">
           <columnnames>
-            <columnname>transaction_id</columnname>
-            <columnname>node_deleted</columnname>
+            <columnname>audit_created</columnname>
+            <columnname>store_id</columnname>
+            <columnname>type_qname_id</columnname>
+            <columnname>id</columnname>
+          </columnnames>
+        </index>
+        <index name="idx_alf_node_mor" unique="false">
+          <columnnames>
+            <columnname>audit_modifier</columnname>
+            <columnname>store_id</columnname>
+            <columnname>type_qname_id</columnname>
+            <columnname>id</columnname>
+          </columnnames>
+        </index>
+        <index name="idx_alf_node_mod" unique="false">
+          <columnnames>
+            <columnname>audit_modified</columnname>
+            <columnname>store_id</columnname>
+            <columnname>type_qname_id</columnname>
+            <columnname>id</columnname>
           </columnnames>
         </index>
       </indexes>
@@ -1654,6 +1754,13 @@
         </column>
       </columns>
       <primarykey name="alf_node_assoc_pkey">
+        <validators>
+            <validator class="org.alfresco.util.schemacomp.validator.NameValidator">
+              <properties>
+                <property name="pattern">alf_node_assoc_pkey1?</property>
+              </properties>
+            </validator>
+        </validators>
         <columnnames>
           <columnname order="1">id</columnname>
         </columnnames>
@@ -1805,6 +1912,20 @@
         <index name="fk_alf_nprop_qn" unique="false">
           <columnnames>
             <columnname>qname_id</columnname>
+          </columnnames>
+        </index>
+        <index name="idx_alf_nprop_s" unique="false">
+          <columnnames>
+            <columnname>qname_id</columnname>
+            <columnname>string_value</columnname>
+            <columnname>node_id</columnname>
+          </columnnames>
+        </index>
+        <index name="idx_alf_nprop_l" unique="false">
+          <columnnames>
+            <columnname>qname_id</columnname>
+            <columnname>long_value</columnname>
+            <columnname>node_id</columnname>
           </columnnames>
         </index>
       </indexes>
@@ -2325,12 +2446,7 @@
             <columnname>local_name</columnname>
           </columnnames>
         </index>
-        <index name="fk_alf_qname_ns" unique="false">
-          <columnnames>
-            <columnname>ns_id</columnname>
-          </columnnames>
-        </index>
-      </indexes>
+        </indexes>
     </table>
     <table name="alf_server">
       <columns>

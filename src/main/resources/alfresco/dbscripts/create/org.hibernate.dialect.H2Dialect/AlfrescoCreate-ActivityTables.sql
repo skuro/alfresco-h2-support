@@ -16,7 +16,6 @@ CREATE TABLE alf_activity_feed
     activity_summary VARCHAR(1024),
     feed_user_id VARCHAR(255),
     activity_type VARCHAR(255) NOT NULL,
-    activity_format VARCHAR(10),
     site_network VARCHAR(255),
     app_tool VARCHAR(36),
     post_user_id VARCHAR(255) NOT NULL,
@@ -27,7 +26,6 @@ CREATE INDEX feed_postdate_idx ON alf_activity_feed (post_date);
 CREATE INDEX feed_postuserid_idx ON alf_activity_feed (post_user_id);
 CREATE INDEX feed_feeduserid_idx ON alf_activity_feed (feed_user_id);
 CREATE INDEX feed_sitenetwork_idx ON alf_activity_feed (site_network);
-CREATE INDEX feed_activityformat_idx ON alf_activity_feed (activity_format);
 
 CREATE SEQUENCE alf_activity_feed_control_seq START WITH 1 INCREMENT BY 1;
 CREATE TABLE alf_activity_feed_control
@@ -58,16 +56,3 @@ CREATE TABLE alf_activity_post
 );
 CREATE INDEX post_jobtasknode_idx ON alf_activity_post (job_task_node);
 CREATE INDEX post_status_idx ON alf_activity_post (status);
-
-
---
--- Record script finish
---
-DELETE FROM alf_applied_patch WHERE id = 'patch.db-V3.0-ActivityTables';
-INSERT INTO alf_applied_patch
-  (id, description, fixes_from_schema, fixes_to_schema, applied_to_schema, target_schema, applied_on_date, applied_to_server, was_executed, succeeded, report)
-  VALUES
-  (
-    'patch.db-V3.0-ActivityTables', 'Manually executed script upgrade V3.0: Activity Tables',
-    0, 125, -1, 126, null, 'UNKNOWN', ${TRUE}, ${TRUE}, 'Script completed'
-  );
