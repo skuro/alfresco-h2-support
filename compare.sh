@@ -37,6 +37,11 @@ fi
 
 ALF=$1
 
+if [ ! -f $ALF ]; then
+    echo war file $ALF not found
+    usage
+fi
+
 TMP=`mktemp -d -t alfh2`
 
 echo "-- Extracting Alfresco"
