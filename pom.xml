@@ -3,7 +3,7 @@
     <groupId>tk.skuro.alfresco</groupId>
     <artifactId>h2-support</artifactId>
     <packaging>jar</packaging>
-    <version>4.2.2-SNAPSHOT</version>
+    <version>5.0-SNAPSHOT</version>
     <name>h2-support</name>
     <url>http://www.skuro.tk</url>
     <description>H2 Database support for Alfresco</description>
